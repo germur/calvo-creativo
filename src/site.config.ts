@@ -73,11 +73,14 @@ const config: Config = {
 
 export default config
 export const integ = config.integ
-export const terms = [
-  { title: 'Privacy Policy', link: '/terms/privacy-policy' },
-  { title: 'Terms & Conditions', link: '/terms/terms-and-conditions' },
-  { title: 'Disclaimer', link: '/terms/disclaimer' },
-  { title: 'Copyright', link: '/terms/copyright' }
-]
+export const terms = {
+  title: 'Legal & Términos',
+  list: [
+    { title: 'Privacy Policy', link: '/terms/privacy-policy' },
+    { title: 'Terms & Conditions', link: '/terms/terms-and-conditions' },
+    { title: 'Disclaimer', link: '/terms/disclaimer' },
+    { title: 'Copyright', link: '/terms/copyright' }
+  ]
+}
 
 
