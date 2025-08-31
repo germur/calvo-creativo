@@ -20,9 +20,9 @@ type Props = {
 }
 
 const { post, posts } = Astro.props
-const { Content, headings, remarkPluginFrontmatter } = await render(post)
+const { Content, remarkPluginFrontmatter } = await render(post)
 ---
 
-<PostLayout {post} {posts} {headings} {remarkPluginFrontmatter}>
+<PostLayout {post} {posts} {remarkPluginFrontmatter}>
   <Content />
 </PostLayout>
