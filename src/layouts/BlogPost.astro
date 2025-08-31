@@ -1,12 +1,10 @@
 ---
-import type { MarkdownHeading } from 'astro'
 import type { CollectionEntry } from 'astro:content'
 
-// Plugin styles
 import 'katex/dist/katex.min.css'
 
 import { MediumZoom } from 'astro-pure/advanced'
-import { ArticleBottom, Copyright, Hero, TOC } from 'astro-pure/components/pages'
+import { ArticleBottom, Copyright, Hero } from 'astro-pure/components/pages'
 import PageLayout from '@/layouts/ContentLayout.astro'
 import { Comment, PageInfo } from '@/components/waline'
 import { integ } from '@/site-config'
@@ -14,14 +12,12 @@ import { integ } from '@/site-config'
 interface Props {
   post: CollectionEntry<'blog'>
   posts: CollectionEntry<'blog'>[]
-  headings: MarkdownHeading[]
   remarkPluginFrontmatter: Record<string, unknown>
 }
 
 const {
   post: { id, data },
   posts,
-  headings,
   remarkPluginFrontmatter
 } = Astro.props
 
@@ -40,6 +36,7 @@ const socialImage = heroImage
     ? heroImage.src
     : heroImage.src.src
   : '/images/social-card.png'
+
 const articleDate = updatedDate?.toISOString() ?? publishDate.toISOString()
 const primaryColor = data.heroImage?.color ?? 'hsl(var(--primary) / var(--un-text-opacity))'
 ---
@@ -47,28 +44,39 @@ const primaryColor = data.heroImage?.color ?? 'hsl(var(--primary) / var(--un-tex
 <PageLayout
   meta={{ articleDate, description, ogImage: socialImage, title }}
   highlightColor={primaryColor}
-  back='/blog'
+  back="/blog"
 >
-  {!!headings.length && <TOC {headings} slot='sidebar' />}
+  <!-- SIN TOC -->
 
-  <Hero {data} {remarkPluginFrontmatter} slot='header'>
-    <Fragment slot='description'>
-      {!isDraft && enableComment && <PageInfo comment class='mt-1' />}
+  <Hero {data} {remarkPluginFrontmatter} slot="header">
+    <Fragment slot="description">
+      {!isDraft && enableComment && <PageInfo comment class="mt-1" />}
     </Fragment>
   </Hero>
+  
+  {Array.isArray(data.tags) && data.tags.length > 0 && (
+  <div class="mt-2 flex flex-wrap gap-2">
+    {data.tags.map((t) => (
+      <a
+        href={`/tags/${t.toLowerCase().replace(/[^a-z0-9\s-]/gi,'').trim().replace(/\s+/g,'-')}/`}
+        class="px-2 py-1 rounded-full border text-sm opacity-80 hover:opacity-100"
+      >
+        {t}
+      </a>
+    ))}
+  </div>
+)}
+
 
   <slot />
 
-  <Fragment slot='bottom'>
-    {/* Copyright */}
+  <Fragment slot="bottom">
     <Copyright {data} />
-    {/* Article recommend */}
-    <ArticleBottom collections={posts} {id} class='mt-3 sm:mt-6' />
-    {/* Comment */}
-    {!isDraft && enableComment && <Comment class='mt-3 sm:mt-6' />}
+    <ArticleBottom collections={posts} {id} class="mt-3 sm:mt-6" />
+    {!isDraft && enableComment && <Comment class="mt-3 sm:mt-6" />}
   </Fragment>
 
-  <slot name='bottom-sidebar' slot='bottom-sidebar' />
+  <slot name="bottom-sidebar" slot="bottom-sidebar" />
 </PageLayout>
 
-{integ.mediumZoom.enable && <MediumZoom />}
+{integ?.mediumZoom?.enable && <MediumZoom />}
