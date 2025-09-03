@@ -1,7 +1,170 @@
 ---
-import CommonPage from "@/layouts/CommonPage.astro";
+import CommonPage from "@/layouts/CommonPage.astro"
+import { Button, Card, Collapse, Icon, Label } from "astro-pure/user"
+import config from "@/site-config"
+
+// Ajusta estos datos
+const email = "rogermur1990@gmail.com"
+const linkedin = "https://www.linkedin.com/in/TU-HANDLE"   // ← pon tu /in/ real
+const calendly = "https://calendly.com/TU-USUARIO/intro"   // ← si no tienes, deja "#"
+
+const subject = encodeURIComponent("Consulta SEO — Calvo Creativo")
+const baseBody = [
+  "Hola,",
+  "",
+  "Vengo desde tu web. Me interesa trabajar contigo en SEO.",
+  "",
+  "Contexto del proyecto:",
+  "- Sitio/negocio:",
+  "- Objetivo principal:",
+  "- CMS/stack:",
+  "- Mercados/idiomas:",
+  "- Presupuesto y plazo:",
+  "",
+  "¡Gracias!"
+].join("\n")
 ---
-<CommonPage title="Contact">
-  <h1>Contacto</h1>
-  <p>¿Trabajamos juntos? Escríbeme a <strong>rogermur1990@gmail.com</strong> o por LinkedIn.</p>
+
+<CommonPage title="Contacto" comment={false}>
+  <!-- HERO -->
+  <section class="prose max-w-none">
+    <h1>Contacto</h1>
+    <p>
+      Soy <strong>{config.author}</strong>. Respondo personalmente en horario
+      <strong>America/Bogota</strong>. Elige el camino que mejor encaje con tu intención.
+    </p>
+
+    <!-- Badges con iconos -->
+    <div class="mt-3 flex flex-wrap gap-2">
+      <Label as="a" href={`mailto:${email}?subject=${subject}&body=${encodeURIComponent(baseBody)}`} title={email}>
+        <Icon name="email" class="size-4" slot="icon" />
+      </Label>
+      <Label as="a" href={linkedin} target="_blank" rel="noopener" title="LinkedIn">
+        <Icon name="github" class="size-4" slot="icon" /> <!-- genérico para red social -->
+      </Label>
+      <Label as="a" href={calendly || "#"} title="Agendar">
+        <Icon name="time" class="size-4" slot="icon" />
+      </Label>
+    </div>
+  </section>
+
+  <!-- ACCIONES RÁPIDAS -->
+  <section class="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+    <Card
+      as="a"
+      heading="Agendar una llamada"
+      subheading="15–20 min • encaje y próximos pasos"
+      href={calendly || "#"}
+    />
+    <Card
+      as="a"
+      heading="Enviar email"
+      subheading="Respuesta en 24–48h"
+      href={`mailto:${email}?subject=${subject}&body=${encodeURIComponent(baseBody)}`}
+    />
+    <Card
+      as="a"
+      heading="Escribirme por LinkedIn"
+      subheading="Mensajes directos"
+      href={linkedin}
+    />
+  </section>
+
+  <!-- INTENCIONES -->
+  <section class="mt-8 prose max-w-none">
+    <h2 id="opciones">¿Qué necesitas ahora?</h2>
+
+    <!-- Consultoría SEO -->
+    <Collapse title="Consultoría SEO — acompañamiento continuo">
+      <p>Impacto de negocio sostenido con <strong>SEO técnico + contenido + automatización</strong>.</p>
+      <ul>
+        <li>Diagnóstico → objetivos y KPIs</li>
+        <li>Backlog priorizado por impacto/esfuerzo</li>
+        <li>Cadencia quincenal/mensual · reporting accionable</li>
+      </ul>
+      <div class="mt-3 flex flex-wrap gap-2">
+        <Button title="Agendar" href={calendly || "#"} variant="ahead">
+          <Icon name="time" class="size-4 mr-2" slot="icon" /> Agendar
+        </Button>
+        <Button title="Enviar email" href={`mailto:${email}?subject=${encodeURIComponent("Consultoría SEO — Calvo Creativo")}&body=${encodeURIComponent(baseBody)}`}>
+          <Icon name="email" class="size-4 mr-2" slot="icon" /> Email
+        </Button>
+      </div>
+    </Collapse>
+
+    <!-- Auditoría técnica -->
+    <Collapse title="Auditoría técnica — foto a fondo y plan claro">
+      <p>Para sitios que necesitan una <strong>radiografía técnica</strong> y roadmap de prioridades.</p>
+      <ul>
+        <li>Crawling (Screaming Frog), indexación, arquitectura, performance</li>
+        <li>Contenido: canibalización, thin, mapeo de intención</li>
+        <li>Data: medición/alertas, automatización básica en Python</li>
+      </ul>
+      <div class="mt-3 flex flex-wrap gap-2">
+        <Button title="Solicitar auditoría" href={`mailto:${email}?subject=${encodeURIComponent("Auditoría técnica — Calvo Creativo")}&body=${encodeURIComponent(baseBody)}`} variant="ahead">
+          <Icon name="email" class="size-4 mr-2" slot="icon" /> Solicitar por email
+        </Button>
+        <Button title="Agendar" href={calendly || "#"}>
+          <Icon name="time" class="size-4 mr-2" slot="icon" /> Agendar
+        </Button>
+      </div>
+    </Collapse>
+
+    <!-- Duda puntual -->
+    <Collapse title="Duda puntual — bloqueo específico">
+      <p>Revisión express y recomendaciones accionables para salir del bloqueo.</p>
+      <div class="mt-3 flex flex-wrap gap-2">
+        <Button title="LinkedIn" href={linkedin}>
+          <Icon name="link" class="size-4 mr-2" slot="icon" /> LinkedIn
+        </Button>
+        <Button title="Email" href={`mailto:${email}?subject=${encodeURIComponent("Duda puntual SEO — Calvo Creativo")}&body=${encodeURIComponent(baseBody)}`}>
+          <Icon name="email" class="size-4 mr-2" slot="icon" /> Email
+        </Button>
+      </div>
+    </Collapse>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="mt-10">
+    <h2 class="mb-3">Preguntas frecuentes</h2>
+    <div class="flex flex-col gap-2">
+      <Collapse title="¿Costos y formatos?">
+        Paquetes cerrados (auditoría) o mensualidad (consultoría), según objetivos, recursos y velocidad deseada.
+      </Collapse>
+      <Collapse title="¿Qué entregables recibo?">
+        Backlog priorizado, recomendaciones técnicas, documentación y tableros/alertas. En consultoría, seguimiento quincenal/mensual.
+      </Collapse>
+      <Collapse title="¿Idiomas y mercados?">
+        Español e inglés. LatAm, US y ES principalmente.
+      </Collapse>
+      <Collapse title="¿Tiempo de respuesta?">
+        24–48h en días hábiles. Para urgencias, indícalo en el asunto.
+      </Collapse>
+    </div>
+  </section>
+
+  <!-- JSON-LD -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            { "@type": "Question", "name": "¿Costos y formatos?", "acceptedAnswer": { "@type": "Answer", "text": "Paquetes (auditoría) o mensualidad (consultoría)." } },
+            { "@type": "Question", "name": "¿Qué entregables recibo?", "acceptedAnswer": { "@type": "Answer", "text": "Backlog priorizado, recomendaciones técnicas, documentación y tableros/alertas." } },
+            { "@type": "Question", "name": "¿Idiomas y mercados?", "acceptedAnswer": { "@type": "Answer", "text": "Español e inglés. LatAm, US y ES." } },
+            { "@type": "Question", "name": "¿Tiempo de respuesta?", "acceptedAnswer": { "@type": "Answer", "text": "24–48h hábiles; urgencias, indicarlo en el asunto." } }
+          ]
+        },
+        {
+          "@type": "Person",
+          "name": {{ JSON.stringify(config.author) }},
+          "email": "mailto:{{ email }}",
+          "url": "https://calvo-creativo.vercel.app/contact",
+          "sameAs": ["https://github.com/germur","{{ linkedin }}"]
+        }
+      ]
+    }
+  </script>
 </CommonPage>
