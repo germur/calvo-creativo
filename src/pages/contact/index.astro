@@ -1,12 +1,13 @@
 ---
 import CommonPage from "@/layouts/CommonPage.astro"
 import { Button, Card, Collapse, Icon, Label } from "astro-pure/user"
+import Spotify from "@/components/user/Spotify.astro"
 import config from "@/site-config"
 
 // Ajusta estos datos
 const email = "rogermur1990@gmail.com"
-const linkedin = "https://www.linkedin.com/in/TU-HANDLE"   // ← pon tu /in/ real
-const calendly = "https://calendly.com/TU-USUARIO/intro"   // ← si no tienes, deja "#"
+const linkedin = "https://www.linkedin.com/in/germur"         // ← cambia si tu handle es otro
+const calendly = "#"                                           // ← pon tu enlace real si usas Calendly
 
 const subject = encodeURIComponent("Consulta SEO — Calvo Creativo")
 const baseBody = [
@@ -40,7 +41,7 @@ const baseBody = [
         <Icon name="email" class="size-4" slot="icon" />
       </Label>
       <Label as="a" href={linkedin} target="_blank" rel="noopener" title="LinkedIn">
-        <Icon name="github" class="size-4" slot="icon" /> <!-- genérico para red social -->
+        <Icon name="link" class="size-4" slot="icon" />
       </Label>
       <Label as="a" href={calendly || "#"} title="Agendar">
         <Icon name="time" class="size-4" slot="icon" />
@@ -122,6 +123,16 @@ const baseBody = [
         </Button>
       </div>
     </Collapse>
+  </section>
+
+  <!-- MÚSICA (Spotify) -->
+  <section id="music" class="mt-10 prose max-w-none">
+    <h2>Lo que escucho mientras optimizo</h2>
+    <Spotify
+      url="https://open.spotify.com/playlist/1CQaef8Hikm13knv2qnmxg"
+      variant="full"
+      title="Deep Work · Calvo Creativo"
+    />
   </section>
 
   <!-- FAQ -->

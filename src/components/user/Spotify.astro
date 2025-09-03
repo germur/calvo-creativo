@@ -1,0 +1,37 @@
+---
+interface Props {
+  url: string
+  variant?: 'full' | 'compact'
+  title?: string
+}
+const { url, variant = 'full', title } = Astro.props
+
+// Limpia querystring y usa /embed/
+let embedUrl = url
+try {
+  const u = new URL(url)
+  embedUrl = `https://open.spotify.com/embed${u.pathname}`
+} catch {
+  embedUrl = url.replace('open.spotify.com/', 'open.spotify.com/embed/').split('?')[0]
+}
+const height = variant === 'compact' ? 152 : 352
+---
+
+<div class="rounded-2xl border overflow-hidden">
+  {title && <div class="px-4 py-2 text-sm opacity-70">{title}</div>}
+  <iframe
+    title={title || 'Spotify embed'}
+    style="border-radius:0"
+    src={embedUrl}
+    width="100%"
+    height={height}
+    frameborder="0"
+    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+    loading="lazy">
+  </iframe>
+  <noscript>
+    <a class="block px-4 py-3 text-sm" href={url} target="_blank" rel="noopener">
+      Abrir en Spotify
+    </a>
+  </noscript>
+</div>
