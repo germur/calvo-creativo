@@ -73,3 +73,45 @@ a {
     color: hsl(var(--primary) / var(--un-text-opacity, 1));
   }
 }
+/* === Calvo Creativo Brand Tokens === */
+:root {
+  /* Hex “marca” (por si las necesitas directas) */
+  --brand-blue:   #0055FF;
+  --brand-orange: #FF6B00;
+  --brand-black:  #0E0E0E;
+  --brand-white:  #FFFFFF;
+  --brand-gray:   #555F12; /* ajusta si tu gris es otro */
+
+  /* Paleta del tema en HSL (se usan así: hsl(var(--primary))) */
+  /* #0055FF → aprox hsl(219 100% 50%) */
+  --primary: 219 100% 50%;
+  /* #FF6B00 → aprox hsl(24 100% 50%) */
+  --secondary: 24 100% 50%;
+
+  /* Detalles UI */
+  --ring: var(--primary);
+  --link: var(--primary);
+}
+
+.dark {
+  /* Puedes dejar igual o ajustar si quieres tonos distintos en dark */
+  --primary: 219 100% 60%;
+  --secondary: 24 100% 55%;
+}
+/* === Calvo Creativo Typography === */
+:root {
+  --font-heading: "Space Grotesk", system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+  --font-ui:      "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+  --font-body:    "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+html { font-family: var(--font-body); }
+
+h1,h2,h3 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+}
+
+button, .btn, .label, nav, .prose strong {
+  font-family: var(--font-ui);
+}
