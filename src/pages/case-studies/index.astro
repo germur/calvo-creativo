@@ -1,36 +1,137 @@
 ---
 import PageLayout from '@/layouts/BaseLayout.astro'
-import { getCollection } from 'astro:content'
+import { getCollection, type CollectionEntry } from 'astro:content'
 
-const items = await getCollection('cases')
+// 1) Traer todos los casos
+const entries = await getCollection('cases')
 
-// ordenar seguros aunque falte publishDate
-const cases = [...items].sort((a, b) => {
-  const ad = a.data.publishDate ? +a.data.publishDate : 0
-  const bd = b.data.publishDate ? +b.data.publishDate : 0
-  return bd - ad
-})
+// 2) Normalizar slug desde id: "law-miami-.../index.mdx" -> "law-miami-..."
+const normalize = (id: string) => id.replace(/\/index\.(md|mdx)$/, '')
 
-const slugOf = (id: string) => id.replace(/\/index\.(md|mdx)$/, '')
+// 3) Mapear y ordenar por fecha (desc)
+type CaseEntry = {
+  slug: string
+  data: CollectionEntry<'cases'>['data']
+}
+const cases: CaseEntry[] = entries
+  .map((e) => ({ slug: normalize(e.id), data: e.data }))
+  .sort((a, b) => {
+    const da = a.data.publishDate ? new Date(a.data.publishDate).getTime() : 0
+    const db = b.data.publishDate ? new Date(b.data.publishDate).getTime() : 0
+    return db - da
+  })
+
+// 4) Rellenar selects únicos (industry / city)
+const industries = Array.from(
+  new Set(cases.map((c) => c.data.industry).filter(Boolean) as string[])
+).sort()
+
+const cities = Array.from(
+  new Set(cases.map((c) => c.data.city).filter(Boolean) as string[])
+).sort()
+
+const meta = {
+  title: 'SEO Case Studies & Success Stories',
+  description: 'Resultados reales: tráfico, leads y rankings con SEO estratégico y AI.'
+}
 ---
 
-<PageLayout meta={{ title: 'Case Studies' }}>
+<PageLayout meta={meta}>
   <main class="prose max-w-none">
     <h1>SEO Case Studies & Success Stories</h1>
+    <p>Explora por industria, ciudad o busca texto libre. O prueba suerte con el 🎲.</p>
 
-    <div class="mt-6 grid gap-4 sm:grid-cols-2">
+    <!-- Filtros -->
+    <div class="not-prose mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_auto_auto]">
+      <input id="q" type="search" placeholder="Search case studies…" class="input" />
+      <select id="filter-industry" class="select">
+        <option value="">All industries</option>
+        {industries.map((i) => <option value={i}>{i}</option>)}
+      </select>
+      <select id="filter-city" class="select">
+        <option value="">All cities</option>
+        {cities.map((c) => <option value={c}>{c}</option>)}
+      </select>
+      <div class="flex gap-2">
+        <button id="roll" class="button">🎲 Roll</button>
+        <button id="clear" class="button" type="button">Clear</button>
+      </div>
+    </div>
+
+    <!-- Grid -->
+    <ul id="grid" class="not-prose mt-6 grid grid-cols-1 gap-3 md:grid-cols-2">
       {cases.map((c) => {
-        const slug = slugOf(c.id)
+        const metaLine = [c.data.industry, c.data.city, c.data.outcome].filter(Boolean).join(' • ')
         return (
-          <a href={`/case-studies/${slug}`} class="block rounded-lg border p-4 hover:bg-muted/40">
-            <h3 class="m-0">{c.data.title}</h3>
-            <p class="mt-1 text-sm opacity-80">
-              {[c.data.industry, c.data.city, c.data.outcome].filter(Boolean).join(' • ')}
-            </p>
-            <p class="mt-2 text-muted-foreground">{c.data.description}</p>
-          </a>
+          <li
+            class="rounded-lg border p-4 transition hover:shadow-sm"
+            data-slug={c.slug}
+            data-industry={c.data.industry || ''}
+            data-city={c.data.city || ''}
+          >
+            <a href={`/case-studies/${c.slug}`} class="block">
+              <h3 class="mb-1 text-lg font-semibold">{c.data.title}</h3>
+              <p class="text-sm opacity-80">{c.data.description}</p>
+              {metaLine && <p class="mt-2 text-xs opacity-70">{metaLine}</p>}
+            </a>
+          </li>
         )
       })}
-    </div>
+    </ul>
+
+    <!-- Script de filtros + 🎲 Roll -->
+    <script>
+      const grid = document.querySelector<HTMLUListElement>('#grid')
+      const q = document.querySelector<HTMLInputElement>('#q')
+      const ind = document.querySelector<HTMLSelectElement>('#filter-industry')
+      const city = document.querySelector<HTMLSelectElement>('#filter-city')
+      const rollBtn = document.querySelector<HTMLButtonElement>('#roll')
+      const clearBtn = document.querySelector<HTMLButtonElement>('#clear')
+
+      const applyFilters = () => {
+        if (!grid) return
+        const query = (q?.value || '').toLowerCase()
+        const industry = ind?.value || ''
+        const cityVal = city?.value || ''
+
+        const items = Array.from(grid.querySelectorAll<HTMLLIElement>('li[data-slug]'))
+        items.forEach((li) => {
+          const liIndustry = li.dataset.industry || ''
+          const liCity = li.dataset.city || ''
+          const text = (li.textContent || '').toLowerCase()
+
+          const matchQ = !query || text.includes(query)
+          const matchInd = !industry || liIndustry === industry
+          const matchCity = !cityVal || liCity === cityVal
+
+          li.style.display = matchQ && matchInd && matchCity ? '' : 'none'
+        })
+      }
+
+      q?.addEventListener('input', applyFilters)
+      ind?.addEventListener('change', applyFilters)
+      city?.addEventListener('change', applyFilters)
+
+      clearBtn?.addEventListener('click', () => {
+        if (q) q.value = ''
+        if (ind) ind.value = ''
+        if (city) city.value = ''
+        applyFilters()
+      })
+
+      rollBtn?.addEventListener('click', () => {
+        if (!grid) return
+        const items = Array.from(grid.querySelectorAll<HTMLLIElement>('li[data-slug]'))
+        const visible = items.filter((li) => li.style.display !== 'none')
+        const pool = visible.length ? visible : items
+        if (!pool.length) return
+        const chosen = pool[Math.floor(Math.random() * pool.length)]
+        const link = chosen.querySelector<HTMLAnchorElement>('a[href]')
+        if (link) window.location.href = link.href
+      })
+
+      // Inicial
+      applyFilters()
+    </script>
   </main>
 </PageLayout>

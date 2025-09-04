@@ -1,0 +1,70 @@
+---
+import CommonPage from "@/layouts/CommonPage.astro"
+import { Button, Card, Icon, Label } from "astro-pure/user"
+import config from "@/site-config"
+---
+
+<CommonPage title="Services" comment={false}>
+  <!-- HERO -->
+  <section class="prose max-w-none">
+    <h1>SEO Services for Florida Businesses</h1>
+    <p>
+      SEO técnico y estrategia de contenidos con <strong>automatización</strong>.
+      Experiencia en Florida y foco en <em>leads calificados</em>.
+    </p>
+
+    <div class="mt-3 flex flex-wrap gap-2">
+      <Label as="a" href="/case-studies" title="Case Studies">
+        <Icon name="link" class="size-4" slot="icon" /> Ver casos
+      </Label>
+      <Label as="a" href="/how-we-work" title="How We Work">
+        <Icon name="menu" class="size-4" slot="icon" /> Método
+      </Label>
+      <Label as="a" href="/contact" title="Contact">
+        <Icon name="email" class="size-4" slot="icon" /> Contacto
+      </Label>
+    </div>
+  </section>
+
+  <!-- CITY SERVICES -->
+  <section class="mt-8">
+    <h2 class="mb-2 text-xl font-semibold">Local SEO (Florida)</h2>
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <Card as="a" heading="SEO in Miami" subheading="Local signals · leads" href="/services/seo-miami" />
+      <Card as="a" heading="SEO in Fort Lauderdale" subheading="Servicios locales" href="/services/seo-fort-lauderdale" />
+      <Card as="a" heading="SEO in Boca Raton" subheading="Servicios locales" href="/services/seo-boca-raton" />
+      <Card as="a" heading="SEO in West Palm Beach" subheading="Servicios locales" href="/services/seo-west-palm-beach" />
+      <Card as="a" heading="SEO in Orlando" subheading="Servicios locales" href="/services/seo-orlando" />
+    </div>
+  </section>
+
+  <!-- STRATEGIC SERVICES -->
+  <section class="mt-8">
+    <h2 class="mb-2 text-xl font-semibold">Strategic Services</h2>
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <Card as="a" heading="Strategic SEO Architecture" subheading="Silos · interlinking · topical authority" href="/services/strategic-seo-architecture" />
+      <Card as="a" heading="AI for SEO" subheading="Clustering · briefs · automatización" href="/services/ai-seo" />
+      <Card as="a" heading="SEO Consulting" subheading="Acompañamiento mensual" href="/services/seo-consulting" />
+    </div>
+  </section>
+
+  <!-- INDUSTRIES -->
+  <section class="mt-8">
+    <h2 class="mb-2 text-xl font-semibold">By Industry</h2>
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <Card as="a" heading="Law Firms (Florida)" subheading="Local + contenidos legales" href="/services/law-firms-florida" />
+      <Card as="a" heading="Roofing (Florida)" subheading="Local + urgencias" href="/services/roofing-companies-florida" />
+      <Card as="a" heading="Real Estate (Florida)" subheading="Local + listings" href="/services/real-estate-florida" />
+      <Card as="a" heading="Construction (Florida)" subheading="Local + B2B" href="/services/construction-florida" />
+    </div>
+  </section>
+
+  <section class="mt-10 flex flex-wrap gap-2">
+    <Button href="/case-studies" variant="ahead" title="Ver casos">
+      <Icon name="link" class="size-4 mr-2" slot="icon" /> Ver Case Studies
+    </Button>
+    <Button href="/contact" title="Book">
+      <Icon name="time" class="size-4 mr-2" slot="icon" /> Book a Consultation
+    </Button>
+  </section>
+</CommonPage>
