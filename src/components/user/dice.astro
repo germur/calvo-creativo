@@ -1,0 +1,14 @@
+---
+interface Props { href?: string }
+const { href = '#' } = Astro.props as Props
+---
+<a href={href} aria-label="Roll the dice"
+  class="inline-flex items-center gap-2 rounded-xl border px-3 py-2 hover:bg-muted transition">
+  <span class="grid grid-cols-2 gap-0.5">
+    <span class="size-1 rounded-full bg-current"></span>
+    <span class="size-1 rounded-full bg-current"></span>
+    <span class="size-1 rounded-full bg-current"></span>
+    <span class="size-1 rounded-full bg-current"></span>
+  </span>
+  <slot>Roll</slot>
+</a>

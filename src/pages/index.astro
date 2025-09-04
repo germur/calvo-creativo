@@ -34,17 +34,15 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
 
       <div class="flex flex-col items-center gap-y-4">
         <h1 class="text-3xl font-bold">{config.author}</h1>
-        <div class="flex flex-wrap justify-center gap-x-7 gap-y-3">
-          <Label title="Colombia">
-            <Icon name="location" class="size-5" slot="icon" />
-          </Label>
+        <div class="flex flex-wrap justify-center gap-x-2 gap-y-2">
+          <Label title="Medellín, CO">Medellín, CO</Label>
           <Label
             title="GitHub"
             as="a"
             href="https://github.com/germur"
             target="_blank"
           >
-            <Icon name="github" class="size-5" slot="icon" />
+            <Icon name="github" class="size-5" slot="icon" /> GitHub
           </Label>
         </div>
       </div>
@@ -60,6 +58,11 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
         </span>
         <p class="font-medium text-muted-foreground">Disponible para consultoría</p>
       </a>
+
+      {/* CTA secundario: 🎲 Case Studies */}
+      <Button href="/case-studies" class="mt-2">
+        <Icon name="time" slot="icon" class="size-4 mr-2" /> 🎲 Roll the dice & discover a success story
+      </Button>
     </section>
 
     <div id="content" class="animate flex flex-col gap-y-10 md:w-4/5 lg:w-5/6">
@@ -88,29 +91,6 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
         </Section>
       )}
 
-      {/*
-      // Si no quieres mostrar “Educación/Certificaciones” aún, déjalo comentado:
-      <Section title="Educación">
-        <Card
-          as="a"
-          heading="Tu formación principal"
-          subheading="Programa/escuela"
-          date="Año - Año"
-          href="#"
-        />
-      </Section>
-
-      <Section title="Certificaciones">
-        <Card
-          as="a"
-          heading="Certificación"
-          subheading="Entidad — breve descripción"
-          date="Año"
-          href="#"
-        />
-      </Section>
-      */}
-
       <Section title="Web & proyectos">
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <ProjectCard
@@ -132,9 +112,9 @@ const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
             imagePath="/src/assets/projects/kseniia-zapiatkina-yATU3rg8tNI-unsplash.jpg"
           />
           <ProjectCard
-            href="/projects"
-            heading="Más proyectos"
-            subheading="Explorar más"
+            href="/case-studies"
+            heading="Case Studies"
+            subheading="Resultados y aprendizajes"
             imagePath="/src/assets/projects/wen-qiao-g_w8I64FiO0-unsplash.jpg"
           />
         </div>

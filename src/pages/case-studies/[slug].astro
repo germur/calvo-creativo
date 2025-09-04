@@ -1,0 +1,80 @@
+---
+import PageLayout from '@/layouts/BaseLayout.astro'
+import { getCollection } from 'astro:content'
+
+const slug = Astro.params.slug!
+const entries = await getCollection('cases')
+
+// "law-miami-traffic-lift/index.mdx" → "law-miami-traffic-lift"
+const normalize = (id: string) => id.replace(/\/index\.(md|mdx)$/, '')
+const entry = entries.find((e) => normalize(e.id) === slug)
+
+if (!entry) {
+  throw new Error(`Case not found: ${slug}`)
+}
+
+// Intentar obtener un componente o HTML ya renderizado
+let ContentComp: any = null
+let html: string | null = null
+
+try {
+  // 1) API moderna: render()
+  if (typeof (entry as any).render === 'function') {
+    const r = await (entry as any).render()
+    ContentComp = r?.Content ?? null
+    html = r?.html ?? null
+  }
+  // 2) API alternativa: rendered.Content / rendered.html
+  else if ((entry as any).rendered) {
+    const rend = (entry as any).rendered
+    ContentComp = rend?.Content ?? null
+    html = rend?.html ?? null
+  }
+} catch {
+  // Silenciamos y seguimos con el fallback
+}
+
+const d: any = entry.data
+const meta = {
+  title: d.title,
+  description: d.description,
+  articleDate: d.publishDate?.toISOString?.(),
+  ogImage: d.heroImage
+    ? (typeof d.heroImage.src === 'string' ? d.heroImage.src : d.heroImage.src.src)
+    : '/images/social-card.png'
+}
+---
+
+<PageLayout meta={meta}>
+  <main class="prose max-w-none">
+    <h1 class="mb-2">{entry.data.title}</h1>
+    <p class="text-muted-foreground">{entry.data.description}</p>
+
+    {(d.industry || d.city || d.outcome) && (
+      <p class="mt-2 text-sm opacity-80">
+        {[d.industry, d.city, d.outcome].filter(Boolean).join(' • ')}
+      </p>
+    )}
+
+    <div class="mt-6">
+      {
+        ContentComp
+          ? <ContentComp />
+          : html
+            ? <div set:html={html} />
+            : <p>Sin contenido disponible para este caso.</p>
+      }
+    </div>
+
+    {Array.isArray(d.impact) && d.impact.length > 0 && (
+      <ul class="mt-6 grid gap-2 sm:grid-cols-2">
+        {d.impact.map((i: string) => <li class="rounded-md border p-3">{i}</li>)}
+      </ul>
+    )}
+
+    <div class="mt-8 flex gap-2">
+      <a class="button" href="/case-studies">← Ver todos</a>
+      <a class="button" href="/contact">Book a Consultation</a>
+    </div>
+  </main>
+</PageLayout>

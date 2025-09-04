@@ -1,6 +1,5 @@
 ---
 import type { CollectionEntry } from 'astro:content'
-
 import 'katex/dist/katex.min.css'
 
 import { MediumZoom } from 'astro-pure/advanced'
@@ -9,17 +8,16 @@ import PageLayout from '@/layouts/ContentLayout.astro'
 import { Comment, PageInfo } from '@/components/waline'
 import { integ } from '@/site-config'
 
-interface Props {
-  post: CollectionEntry<'blog'>
-  posts: CollectionEntry<'blog'>[]
+type BlogEntry = CollectionEntry<'blog'>
+
+interface PageProps {
+  post: BlogEntry
+  posts: BlogEntry[]
   remarkPluginFrontmatter: Record<string, unknown>
 }
 
-const {
-  post: { id, data },
-  posts,
-  remarkPluginFrontmatter
-} = Astro.props
+const { post, posts, remarkPluginFrontmatter } = Astro.props as PageProps
+const { id, data } = post
 
 const {
   description,
@@ -31,13 +29,12 @@ const {
   comment: enableComment
 } = data
 
-const socialImage = heroImage
-  ? typeof heroImage.src === 'string'
-    ? heroImage.src
-    : heroImage.src.src
-  : '/images/social-card.png'
+const socialImage =
+  heroImage
+    ? (typeof heroImage.src === 'string' ? heroImage.src : heroImage.src.src)
+    : '/images/social-card.png'
 
-const articleDate = updatedDate?.toISOString() ?? publishDate.toISOString()
+const articleDate = (updatedDate ?? publishDate).toISOString()
 const primaryColor = data.heroImage?.color ?? 'hsl(var(--primary) / var(--un-text-opacity))'
 ---
 
@@ -46,33 +43,30 @@ const primaryColor = data.heroImage?.color ?? 'hsl(var(--primary) / var(--un-tex
   highlightColor={primaryColor}
   back="/blog"
 >
-  <!-- SIN TOC -->
-
-  <Hero {data} {remarkPluginFrontmatter} slot="header">
+  <Hero data={data} remarkPluginFrontmatter={remarkPluginFrontmatter} slot="header">
     <Fragment slot="description">
       {!isDraft && enableComment && <PageInfo comment class="mt-1" />}
     </Fragment>
   </Hero>
-  
-  {Array.isArray(data.tags) && data.tags.length > 0 && (
-  <div class="mt-2 flex flex-wrap gap-2">
-    {data.tags.map((t) => (
-      <a
-        href={`/tags/${t.toLowerCase().replace(/[^a-z0-9\s-]/gi,'').trim().replace(/\s+/g,'-')}/`}
-        class="px-2 py-1 rounded-full border text-sm opacity-80 hover:opacity-100"
-      >
-        {t}
-      </a>
-    ))}
-  </div>
-)}
 
+  {Array.isArray(data.tags) && data.tags.length > 0 && (
+    <div class="mt-2 flex flex-wrap gap-2">
+      {data.tags.map((t: string) => (
+        <a
+          href={`/tags/${t.toLowerCase().replace(/[^a-z0-9\s-]/gi, '').trim().replace(/\s+/g, '-')}`}
+          class="rounded-full border px-2 py-1 text-sm opacity-80 hover:opacity-100"
+        >
+          {t}
+        </a>
+      ))}
+    </div>
+  )}
 
   <slot />
 
   <Fragment slot="bottom">
-    <Copyright {data} />
-    <ArticleBottom collections={posts} {id} class="mt-3 sm:mt-6" />
+    <Copyright data={data} />
+    <ArticleBottom collections={posts} id={id} class="mt-3 sm:mt-6" />
     {!isDraft && enableComment && <Comment class="mt-3 sm:mt-6" />}
   </Fragment>
 

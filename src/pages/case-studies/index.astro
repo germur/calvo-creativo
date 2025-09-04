@@ -1,0 +1,36 @@
+---
+import PageLayout from '@/layouts/BaseLayout.astro'
+import { getCollection } from 'astro:content'
+
+const items = await getCollection('cases')
+
+// ordenar seguros aunque falte publishDate
+const cases = [...items].sort((a, b) => {
+  const ad = a.data.publishDate ? +a.data.publishDate : 0
+  const bd = b.data.publishDate ? +b.data.publishDate : 0
+  return bd - ad
+})
+
+const slugOf = (id: string) => id.replace(/\/index\.(md|mdx)$/, '')
+---
+
+<PageLayout meta={{ title: 'Case Studies' }}>
+  <main class="prose max-w-none">
+    <h1>SEO Case Studies & Success Stories</h1>
+
+    <div class="mt-6 grid gap-4 sm:grid-cols-2">
+      {cases.map((c) => {
+        const slug = slugOf(c.id)
+        return (
+          <a href={`/case-studies/${slug}`} class="block rounded-lg border p-4 hover:bg-muted/40">
+            <h3 class="m-0">{c.data.title}</h3>
+            <p class="mt-1 text-sm opacity-80">
+              {[c.data.industry, c.data.city, c.data.outcome].filter(Boolean).join(' • ')}
+            </p>
+            <p class="mt-2 text-muted-foreground">{c.data.description}</p>
+          </a>
+        )
+      })}
+    </div>
+  </main>
+</PageLayout>

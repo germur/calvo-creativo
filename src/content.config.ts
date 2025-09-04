@@ -1,25 +1,19 @@
 import { defineCollection, z } from 'astro:content'
 import { glob } from 'astro/loaders'
 
-function removeDupsAndLowerCase(array: string[]) {
-  if (!array.length) return array
-  const lowercaseItems = array.map((str) => str.toLowerCase())
-  const distinctItems = new Set(lowercaseItems)
-  return Array.from(distinctItems)
+function dedupeLower(arr?: string[]) {
+  if (!arr?.length) return []
+  return Array.from(new Set(arr.map((s) => s.toLowerCase())))
 }
 
-// Define blog collection
+/* BLOG */
 const blog = defineCollection({
-  // Load Markdown and MDX files in the `src/content/blog/` directory.
   loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
-  // Required
   schema: ({ image }) =>
     z.object({
-      // Required
       title: z.string().max(60),
       description: z.string().max(160),
       publishDate: z.coerce.date(),
-      // Optional
       updatedDate: z.coerce.date().optional(),
       heroImage: z
         .object({
@@ -28,19 +22,17 @@ const blog = defineCollection({
           inferSize: z.boolean().optional(),
           width: z.number().optional(),
           height: z.number().optional(),
-
           color: z.string().optional()
         })
         .optional(),
-      tags: z.array(z.string()).default([]).transform(removeDupsAndLowerCase),
+      tags: z.array(z.string()).default([]).transform(dedupeLower),
       language: z.string().optional(),
       draft: z.boolean().default(false),
-      // Special fields
       comment: z.boolean().default(true)
     })
 })
 
-// Define docs collection
+/* DOCS */
 const docs = defineCollection({
   loader: glob({ base: './src/content/docs', pattern: '**/*.{md,mdx}' }),
   schema: () =>
@@ -49,11 +41,47 @@ const docs = defineCollection({
       description: z.string().max(160),
       publishDate: z.coerce.date().optional(),
       updatedDate: z.coerce.date().optional(),
-      tags: z.array(z.string()).default([]).transform(removeDupsAndLowerCase),
+      tags: z.array(z.string()).default([]).transform(dedupeLower),
       draft: z.boolean().default(false),
-      // Special fields
       order: z.number().default(999)
     })
 })
 
-export const collections = { blog, docs }
+/* CASE STUDIES */
+const cases = defineCollection({
+  loader: glob({ base: './src/content/cases', pattern: '**/*.{md,mdx}' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string().max(80),
+      description: z.string().max(180),
+      publishDate: z.coerce.date(),
+      updatedDate: z.coerce.date().optional(),
+      heroImage: z
+        .object({
+          src: image(),
+          alt: z.string().optional(),
+          inferSize: z.boolean().optional(),
+          width: z.number().optional(),
+          height: z.number().optional(),
+          color: z.string().optional()
+        })
+        .optional(),
+      tags: z.array(z.string()).default([]).transform(dedupeLower),
+      draft: z.boolean().default(false),
+
+      // Campos propios del caso
+      industry: z.string().optional(),
+      city: z.string().optional(),
+      outcome: z.string().optional(),
+      impact: z.array(z.string()).default([]),
+      external: z
+        .object({
+          url: z.string().url().optional(),
+          label: z.string().optional()
+        })
+        .partial()
+        .optional()
+    })
+})
+
+export const collections = { blog, docs, cases }
