@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Technical from './pages/Technical';
 import Creative from './pages/Creative';
 import Blog from './pages/Blog';
+import ArticleSeo from './pages/ArticleSeo';
 import Profile from './pages/Profile';
 import Booking from './pages/Booking';
 
@@ -34,9 +35,8 @@ const Navigation = () => {
           <Link
             key={link.path}
             to={link.path}
-            className={`text-sm font-medium transition-colors hover:text-primary ${
-              isActive(link.path) ? 'text-primary border-b-2 border-primary' : 'text-gray-400'
-            }`}
+            className={`text-sm font-medium transition-colors hover:text-primary ${isActive(link.path) ? 'text-primary border-b-2 border-primary' : 'text-gray-400'
+              }`}
           >
             {link.label}
           </Link>
@@ -78,6 +78,7 @@ export default function App() {
             <Route path="/lado-a" element={<Technical />} />
             <Route path="/lado-b" element={<Creative />} />
             <Route path="/liner-notes" element={<Blog />} />
+            <Route path="/liner-notes/seo-no-murio-humo" element={<ArticleSeo />} />
             <Route path="/el-artista" element={<Profile />} />
             <Route path="/booking" element={<Booking />} />
           </Routes>
